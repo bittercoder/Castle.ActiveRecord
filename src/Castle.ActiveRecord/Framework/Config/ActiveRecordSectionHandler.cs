@@ -33,9 +33,23 @@ namespace Castle.ActiveRecord.Framework.Config
 		/// <returns>The created section handler object.</returns>
 		public object Create(object parent, object configContext, XmlNode section)
 		{
+			FixupThreadInfoType(section);
+
 			PopulateSource(section);
 
 			return this;
+		}
+
+		static void FixupThreadInfoType(XmlNode section)
+		{
+			var threadInfoTypeAttr = section.Attributes["threadinfotype"];
+
+			if (threadInfoTypeAttr != null)
+			{
+				threadInfoTypeAttr.Value = threadInfoTypeAttr.Value
+					.Replace("Castle.ActiveRecord.Framework.Scopes.HybridWebThreadScopeInfo, Castle.ActiveRecord",
+									 "Castle.ActiveRecord.Framework.Scopes.HybridWebThreadScopeInfo, Castle.ActiveRecord.Web");
+			}
 		}
 
 		/// <summary>
