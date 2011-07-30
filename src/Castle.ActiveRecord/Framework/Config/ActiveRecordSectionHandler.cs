@@ -42,13 +42,19 @@ namespace Castle.ActiveRecord.Framework.Config
 
 		static void FixupThreadInfoType(XmlNode section)
 		{
+			const string oldHybridWebThreadScopeInfo = "Castle.ActiveRecord.Framework.Scopes.HybridWebThreadScopeInfo, Castle.ActiveRecord";
+			const string newHybridWebThreadScopeInfo = "Castle.ActiveRecord.Framework.Scopes.HybridWebThreadScopeInfo, Castle.ActiveRecord.Web";
+
 			var threadInfoTypeAttr = section.Attributes["threadinfotype"];
 
-			if (threadInfoTypeAttr != null)
+			if (threadInfoTypeAttr == null) return;
+
+			string value = threadInfoTypeAttr.Value;
+
+			if (value.Contains(oldHybridWebThreadScopeInfo)
+					&& !(value.Contains(newHybridWebThreadScopeInfo)))
 			{
-				threadInfoTypeAttr.Value = threadInfoTypeAttr.Value
-					.Replace("Castle.ActiveRecord.Framework.Scopes.HybridWebThreadScopeInfo, Castle.ActiveRecord",
-									 "Castle.ActiveRecord.Framework.Scopes.HybridWebThreadScopeInfo, Castle.ActiveRecord.Web");
+				threadInfoTypeAttr.Value = value.Replace(oldHybridWebThreadScopeInfo, newHybridWebThreadScopeInfo);	
 			}
 		}
 
